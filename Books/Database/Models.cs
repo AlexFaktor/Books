@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Books
+namespace Books.Database
 {
     public class Book
     {
@@ -25,6 +25,7 @@ namespace Books
         [Required]
         public Guid Id { get; set; }
         [Required]
+        [MaxLength(255)]
         public string? Name { get; set; }
     }
 
@@ -33,6 +34,7 @@ namespace Books
         [Required]
         public Guid Id { get; set; }
         [Required]
+        [MaxLength(255)]
         public string? Name { get; set; }
     }
 
@@ -41,6 +43,7 @@ namespace Books
         [Required]
         public Guid Id { get; set; }
         [Required]
+        [MaxLength(255)]
         public string? Name { get; set; }
     }
 }

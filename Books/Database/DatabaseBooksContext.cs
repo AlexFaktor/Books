@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Books
+namespace Books.Database
 {
     public class DatabaseBooksContext : DbContext
     {

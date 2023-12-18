@@ -1,4 +1,6 @@
-﻿namespace Books
+﻿using Books.Database;
+
+namespace Books
 {
     public class Program
     {
