@@ -3,20 +3,46 @@
 namespace Books
 {
     public class Program
-    {
-        static void Main(string[] args)
+    {    
+        static int Main(string[] args)
         {
-            using (var db = new DatabaseBooksContext())
+            if (args.Length == 1)
             {
-                var books = db.Books.ToList();
+                using StreamReader reader = new(args[0]);
 
-                foreach (var book in books)
+                string line;
+                int counter = 0;
+
+                while ((line = reader.ReadLine()!) != null)
                 {
-                    db.Books.Remove(book);
+                    string[] data = line.Split(',');
+                    try
+                    {
+                        Queries.AddBook(data);
+                        counter++;
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine($"{data[0]} by {data[4]} added to the database successfully");
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    catch(Exception ex) 
+                    { 
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine(ex.Message);
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
                 }
+                Console.WriteLine($"Total books added: {counter}");
 
-                db.SaveChanges();
+                return 0;
             }
+            if (args.Length == 2)
+            {
+
+
+                return 0;
+            }
+            
+            return 0;
         }
     }
 }
