@@ -1,4 +1,5 @@
 ﻿using Books.Database;
+using Newtonsoft.Json;
 
 namespace Books
 {
@@ -35,13 +36,27 @@ namespace Books
 
                 return 0;
             }
-            if (args.Length == 0)
+            if (args.Length == 2)
             {
-                var books = Queries.GetBook(new Filter(title: "19"));
+                string jsonContent = File.ReadAllText(args[0]);
+
+                Filter filter = JsonConvert.DeserializeObject<Filter>(jsonContent)!;
+
+                var books = Queries.GetBook(filter);
+
+                using var writer = File.CreateText(args[1]);
+                using var db = new DatabaseBooksContext();
 
                 foreach (var book in books)
                 {
-                    Console.WriteLine(book.Title);
+                    var result = $"{book.Title}," +
+                                 $"{book.Pages}," +
+                                 $"{db.Genre.Where(g => g.Id == book.GenreId).ToArray()[0].Name}," +
+                                 $"{db.Author.Where(a => a.Id == book.AuthorId).ToArray()[0].Name}," +
+                                 $"{db.Publisher.Where(p => p.Id == book.PublisherId).ToArray()[0].Name}," +
+                                 $"{book.ReleaseDate:yyyy-MM-dd}";
+
+                    writer.WriteLine(result);
                 }
 
                 return 0;

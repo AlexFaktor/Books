@@ -31,19 +31,5 @@ namespace Books.Database
             PublishedBefore = publishedBefore;
             PublishedAfter = publishedAfter;
         }
-
-        public Filter(string path )
-        {
-            string json = File.ReadAllText(path);
-            Filter filterFromJSON = JsonConvert.DeserializeObject<Filter>(json)!;
-        Title = filterFromJSON.Title;
-        Genre = filterFromJSON.Genre;
-        Author = filterFromJSON.Author;
-        Publisher = filterFromJSON.Publisher;
-        MoreThanPages = filterFromJSON.MoreThanPages;
-        LessThanPages = filterFromJSON.LessThanPages;
-        PublishedBefore = filterFromJSON.PublishedBefore;
-        PublishedAfter = filterFromJSON.PublishedAfter;
-        }
     }
 }
