@@ -35,9 +35,14 @@ namespace Books
 
                 return 0;
             }
-            if (args.Length == 2)
+            if (args.Length == 0)
             {
+                var books = Queries.GetBook(new Filter(title: "19"));
 
+                foreach (var book in books)
+                {
+                    Console.WriteLine(book.Title);
+                }
 
                 return 0;
             }

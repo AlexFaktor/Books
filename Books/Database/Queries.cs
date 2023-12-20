@@ -87,5 +87,31 @@
                 db.SaveChanges();
             }
         }
+
+        public static List<Book> GetBook(Filter filter)
+        {
+            using var db = new DatabaseBooksContext();
+
+            var genre = db.Genre.Where(g => g.Name == filter.Genre).FirstOrDefault();
+            var author = db.Author.Where(a => a.Name == filter.Author).FirstOrDefault();
+            var publisher = db.Publisher.Where(p => p.Name == filter.Publisher).FirstOrDefault();
+
+            Guid? genreId = genre?.Id;
+            Guid? authorId = author?.Id;
+            Guid? publisherId = publisher?.Id;
+
+            var books = db.Books.Where(b =>
+                                    (filter.Title == null || b.Title!.Contains(filter.Title)) &&
+                                    (filter.Genre == null || b.GenreId == genreId) &&
+                                    (filter.Author == null || b.AuthorId == authorId) &&
+                                    (filter.Publisher == null || b.PublisherId == publisherId) &&
+                                    (filter.MoreThanPages == null || b.Pages >= filter.MoreThanPages) &&
+                                    (filter.LessThanPages == null || b.Pages < filter.LessThanPages) &&
+                                    (filter.PublishedBefore == null || b.ReleaseDate < filter.PublishedBefore) &&
+                                    (filter.PublishedAfter == null || b.ReleaseDate > filter.PublishedAfter)
+                                    );
+
+            return books.ToList();
+        }
     }
 }
