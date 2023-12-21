@@ -1,5 +1,23 @@
-﻿namespace Books.Database
+﻿using System.Linq;
+
+namespace Books.Database
 {
+    public static class GuidModifying
+    {
+        public static bool EqualsAny(this Guid value, IEnumerable<Guid> values)
+        {
+            foreach (var v in values)
+            {
+                if (value.Equals(v))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
+
     public class Queries
     {
         public static void AddBook(string[] data)
@@ -22,10 +40,7 @@
             {
                 throw new ArgumentException($"The publisher's name is too long. Book: {data[0]}");
             }
-
-            var pagesSuccessfully = int.TryParse(data[1], out int pages);
-
-            if (!pagesSuccessfully)
+            if (!int.TryParse(data[1], out int pages))
             {
                 throw new ArgumentException($"The page format is incorrect. Book: {data[0]}");
             }
@@ -40,10 +55,7 @@
                 db.Genre.Add(genre);
                 db.SaveChanges();
             }
-
-            var dateTimeSuccessfully = DateTime.TryParse(data[3], out DateTime bookDate);
-
-            if (!dateTimeSuccessfully)
+            if (!DateTime.TryParse(data[3], out DateTime bookDate))
             {
                 throw new ArgumentException($"The date format is incorrect. Book: {data[0]}");
             }
@@ -92,19 +104,24 @@
         {
             using var db = new DatabaseBooksContext();
 
-            var genre = db.Genre.Where(g => g.Name == filter.Genre).FirstOrDefault();
-            var author = db.Author.Where(a => a.Name == filter.Author).FirstOrDefault();
-            var publisher = db.Publisher.Where(p => p.Name == filter.Publisher).FirstOrDefault();
-
-            Guid? genreId = genre?.Id;
-            Guid? authorId = author?.Id;
-            Guid? publisherId = publisher?.Id;
+            var possibleGenres = db.Genre.Where(g => g.Name!.Contains(filter.Genre))
+                .ToList()
+                .Select(g => g.Id)
+                .ToList();
+            var possibleAuthor = db.Author.Where(a => a.Name!.Contains(filter.Author))
+                .ToList()
+                .Select(a => a.Id)
+                .ToList();
+            var possiblePublisher = db.Publisher.Where(p => p.Name!.Contains(filter.Publisher))
+                .ToList()
+                .Select(p => p.Id)
+                .ToList();
 
             var books = db.Books.Where(b =>
                                     (filter.Title == null || b.Title!.Contains(filter.Title)) &&
-                                    (filter.Genre == null || b.GenreId == genreId) &&
-                                    (filter.Author == null || b.AuthorId == authorId) &&
-                                    (filter.Publisher == null || b.PublisherId == publisherId) &&
+                                    (filter.Genre == null || possibleGenres.Contains(b.GenreId!)) && 
+                                    (filter.Author == null || possibleAuthor.Contains(b.AuthorId!)) && 
+                                    (filter.Publisher == null || possiblePublisher.Contains(b.PublisherId!)) && 
                                     (filter.MoreThanPages == null || b.Pages >= filter.MoreThanPages) &&
                                     (filter.LessThanPages == null || b.Pages < filter.LessThanPages) &&
                                     (filter.PublishedBefore == null || b.ReleaseDate < filter.PublishedBefore) &&
