@@ -4,3 +4,5 @@ obj/
 Properties/
 *.user
 /MatrixTrace/Properties/launchSettings.json
+/Migrations
+Books/Migrations/
