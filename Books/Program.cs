@@ -9,46 +9,54 @@ namespace Books
         {
             if (args.Length == 1)
             {
-                using var db = new DatabaseBooksContext();
-                using StreamReader reader = new(args[0]);
-
-                string line;
-                int counter = 0;
-
-                while ((line = reader.ReadLine()!) != null)
+                try
                 {
-                    string[] data = line.Split(',');
-                    try
-                    {
-                        var book = Queries.ParseBook(data);
-                        Console.WriteLine(book.Id);
+                    using var db = new DatabaseBooksContext();
+                    using StreamReader reader = new(args[0]);
 
-                        if (db.Books.Any(b => b.Id == book.Id))
-                        {
-                            Console.ForegroundColor = ConsoleColor.Yellow;
-                            Console.WriteLine($"{data[0]} by {data[4]}, already in the database");
-                            Console.ForegroundColor = ConsoleColor.White;
-                        }
-                        else
-                        {
-                            db.Books.Add(book);
-                            db.SaveChanges();
-                            counter++;
-                            Console.ForegroundColor = ConsoleColor.Green;
-                            Console.WriteLine($"{data[0]} by {data[4]}, added to the database successfully");
-                            Console.ForegroundColor = ConsoleColor.White;
-                        }
-                    }
-                    catch (Exception ex)
+                    string line;
+                    int counter = 0;
+
+                    while ((line = reader.ReadLine()!) != null)
                     {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine(ex.Message);
-                        Console.ForegroundColor = ConsoleColor.White;
+                        string[] data = line.Split(',');
+                        try
+                        {
+                            var book = Queries.ParseBook(data);
+
+                            if (db.Books.Any(b => b.Id == book.Id))
+                            {
+                                Console.ForegroundColor = ConsoleColor.Yellow;
+                                Console.WriteLine($"{data[0]} by {data[4]}, already in the database");
+                                Console.ForegroundColor = ConsoleColor.White;
+                            }
+                            else
+                            {
+                                db.Books.Add(book);
+                                db.SaveChanges();
+                                counter++;
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                Console.WriteLine($"{data[0]} by {data[4]}, added to the database successfully");
+                                Console.ForegroundColor = ConsoleColor.White;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine(ex.Message);
+                            Console.ForegroundColor = ConsoleColor.White;
+                        }
                     }
+                    Console.WriteLine($"Total books added: {counter}");
+
+                    return 0;
                 }
-                Console.WriteLine($"Total books added: {counter}");
-
-                return 0;
+                catch (Exception ex)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(ex.Message);
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
             }
             if (args.Length == 2)
             {
