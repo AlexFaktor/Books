@@ -1,27 +1,25 @@
-﻿using System.Linq;
+﻿using System.Security.Cryptography;
+using System.Text;
 
 namespace Books.Database
 {
-    public static class GuidModifying
-    {
-        public static bool EqualsAny(this Guid value, IEnumerable<Guid> values)
-        {
-            foreach (var v in values)
-            {
-                if (value.Equals(v))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-    }
-
     public class Queries
     {
-        public static void AddBook(string[] data)
+        private static Guid GenerateGuidFromData(Book book)
         {
+            byte[] dataBytes = Encoding.UTF8.GetBytes($"{book.Title}{book.Pages}{book.GenreId}{book.AuthorId}{book.ReleaseDate}{book.PublisherId}");
+
+            byte[] hashBytes = SHA256.HashData(dataBytes);
+
+            byte[] guidBytes = new byte[16];
+            Array.Copy(hashBytes, guidBytes, 16);
+
+            return new Guid(guidBytes);
+        }
+
+        public static Book ParseBook(string[] data)
+        {
+
             using var db = new DatabaseBooksContext();
 
             if (data[0].Length > 255)
@@ -36,13 +34,17 @@ namespace Books.Database
             {
                 throw new ArgumentException($"The name of the author of the book is too long. Book: {data[0]}");
             }
-            if (data[5].Length > 255) 
+            if (data[5].Length > 255)
             {
                 throw new ArgumentException($"The publisher's name is too long. Book: {data[0]}");
             }
             if (!int.TryParse(data[1], out int pages))
             {
                 throw new ArgumentException($"The page format is incorrect. Book: {data[0]}");
+            }
+            if (!DateTime.TryParse(data[3], out DateTime bookDate))
+            {
+                throw new ArgumentException($"The date format is incorrect. Book: {data[0]}");
             }
 
             Genre genre = db.Genre.FirstOrDefault(g => g.Name == data[2])!;
@@ -54,10 +56,6 @@ namespace Books.Database
                 };
                 db.Genre.Add(genre);
                 db.SaveChanges();
-            }
-            if (!DateTime.TryParse(data[3], out DateTime bookDate))
-            {
-                throw new ArgumentException($"The date format is incorrect. Book: {data[0]}");
             }
 
             Author author = db.Author.FirstOrDefault(a => a.Name == data[4])!;
@@ -88,31 +86,24 @@ namespace Books.Database
                 AuthorId = author.Id,
                 PublisherId = publisher.Id,
             };
+            book.Id = GenerateGuidFromData(book);
 
-            var exists = db.Books.Any(b => b.Title == book.Title 
-                                    && b.AuthorId == book.AuthorId 
-                                    && b.PublisherId == book.PublisherId);
-
-            if (!exists)
-            {
-                db.Books.Add(book);
-                db.SaveChanges();
-            }
+            return book;
         }
 
         public static List<Book> GetBook(Filter filter)
         {
             using var db = new DatabaseBooksContext();
 
-            var possibleGenres = db.Genre.Where(g => g.Name!.Contains(filter.Genre))
+            var possibleGenres = db.Genre.Where(g => g.Name!.Contains(filter.Genre!))
                 .ToList()
                 .Select(g => g.Id)
                 .ToList();
-            var possibleAuthor = db.Author.Where(a => a.Name!.Contains(filter.Author))
+            var possibleAuthor = db.Author.Where(a => a.Name!.Contains(filter.Author!))
                 .ToList()
                 .Select(a => a.Id)
                 .ToList();
-            var possiblePublisher = db.Publisher.Where(p => p.Name!.Contains(filter.Publisher))
+            var possiblePublisher = db.Publisher.Where(p => p.Name!.Contains(filter.Publisher!))
                 .ToList()
                 .Select(p => p.Id)
                 .ToList();
