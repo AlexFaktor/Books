@@ -4,7 +4,7 @@ namespace Books.Database
 {
     public class FileBookTools
     {
-        public static List<string[]> GetDataFromFile(string path)
+        public static List<string[]> GetBooksFromFile(string path)
         {
             using StreamReader reader = new(path);
 
@@ -17,12 +17,36 @@ namespace Books.Database
             }
             return result;
         }
+
+        public static void SetBooksToFile(List<Book> books, string path)
+        {
+            using var db = new DatabaseBooksContext();
+            using var writer = File.CreateText(path);
+
+            foreach (var book in books)
+            {
+                var result = $"{book.Title}," +
+                             $"{book.Pages}," +
+                             $"{db.Genre.Where(g => g.Id == book.GenreId).ToArray()[0].Name}," +
+                             $"{db.Author.Where(a => a.Id == book.AuthorId).ToArray()[0].Name}," +
+                             $"{db.Publisher.Where(p => p.Id == book.PublisherId).ToArray()[0].Name}," +
+                             $"{book.ReleaseDate:yyyy-MM-dd}";
+
+                writer.WriteLine(result);
+            }
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine($"Books available on request: {books.Count}");
+            Console.ForegroundColor = ConsoleColor.White;
+        }
     }
 
     public class Queries
     {
-        public static void AddBook(string[] data)
+        public static bool AddBook(string[] data)
         {
+            if (data.Length != 6)
+                throw new ArgumentException("Incorrect amount of data");
+
             using var db = new DatabaseBooksContext();
 
             var book = new Book(data);
@@ -43,12 +67,14 @@ namespace Books.Database
                 Console.WriteLine($"{data[0]} by {data[4]}, added to the database successfully");
                 Console.ForegroundColor = ConsoleColor.White;
                 db.SaveChanges();
+                return true;
             }
             else
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine($"{data[0]} by {data[4]}, already in the database");
                 Console.ForegroundColor = ConsoleColor.White;
+                return false;
             }
         }
 
@@ -97,7 +123,9 @@ namespace Books.Database
                     {
                         var firstElement = books.First();
                         books.Remove(firstElement);
-                        AddBook(firstElement);
+
+                        if (AddBook(firstElement))
+                            counter++;
                     }
                     catch (Exception ex)
                     {
@@ -117,29 +145,11 @@ namespace Books.Database
             }
         }
 
-        public static void GetBooksToFileWithFilter(string pathToFilter, string pathToFile)
+        public static List<Book> GetBooksWithFilterFromFile(string pathToFilter)
         {
             Filter filter = JsonConvert.DeserializeObject<Filter>(File.ReadAllText(pathToFilter))!;
 
-            var books = GetFilteredBooks(filter);
-
-            using var writer = File.CreateText(pathToFile);
-            using var db = new DatabaseBooksContext();
-
-            foreach (var book in books)
-            {
-                var result = $"{book.Title}," +
-                             $"{book.Pages}," +
-                             $"{db.Genre.Where(g => g.Id == book.GenreId).ToArray()[0].Name}," +
-                             $"{db.Author.Where(a => a.Id == book.AuthorId).ToArray()[0].Name}," +
-                             $"{db.Publisher.Where(p => p.Id == book.PublisherId).ToArray()[0].Name}," +
-                             $"{book.ReleaseDate:yyyy-MM-dd}";
-
-                writer.WriteLine(result);
-            }
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine($"Books available on request: {books.Count}");
-            Console.ForegroundColor = ConsoleColor.White;
+            return GetFilteredBooks(filter);
         }
     }
 }

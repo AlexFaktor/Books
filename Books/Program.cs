@@ -9,12 +9,12 @@ namespace Books
         {
             if (args.Length == 1)
             {
-                Queries.AddBooks(FileBookTools.GetDataFromFile(args[0]));
+                Queries.AddBooks(FileBookTools.GetBooksFromFile(args[0]));
                 return 0;
             }
             if (args.Length == 2)
             {
-                Queries.GetBooksToFileWithFilter(args[0], args[1]);
+                FileBookTools.SetBooksToFile(Queries.GetBooksWithFilterFromFile(args[0]), args[1]);
                 return 0;
             }
 
