@@ -1,10 +1,10 @@
 namespace Books.Test
 {
     [TestClass]
-    public class UnitTest1
+    public class BooksTests
     {
         [TestMethod]
-        public void TestMethod1()
+        public void BooksTests()
         {
         }
     }

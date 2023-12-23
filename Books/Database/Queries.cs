@@ -1,97 +1,58 @@
-﻿using System.Security.Cryptography;
-using System.Text;
+﻿using Newtonsoft.Json;
 
 namespace Books.Database
 {
+    public class FileBookTools
+    {
+        public static List<string[]> GetDataFromFile(string path)
+        {
+            using StreamReader reader = new(path);
+
+            List<string[]> result = new();
+            string line;
+            while ((line = reader.ReadLine()!) != null)
+            {
+                string[] data = line.Split(',');
+                result.Add(data);
+            }
+            return result;
+        }
+    }
+
     public class Queries
     {
-        private static Guid GenerateGuidFromData(Book book)
+        public static void AddBook(string[] data)
         {
-            byte[] dataBytes = Encoding.UTF8.GetBytes($"{book.Title}{book.Pages}{book.GenreId}{book.AuthorId}{book.ReleaseDate}{book.PublisherId}");
-
-            byte[] hashBytes = SHA256.HashData(dataBytes);
-
-            byte[] guidBytes = new byte[16];
-            Array.Copy(hashBytes, guidBytes, 16);
-
-            return new Guid(guidBytes);
-        }
-
-        public static Book ParseBook(string[] data)
-        {
-
             using var db = new DatabaseBooksContext();
 
-            if (data[0].Length > 255)
-            {
-                throw new ArgumentException($"The book name is too long. Book: {data[0]}");
-            }
-            if (data[2].Length > 255)
-            {
-                throw new ArgumentException($"The genre of the book is too long. Book: {data[0]}");
-            }
-            if (data[4].Length > 255)
-            {
-                throw new ArgumentException($"The name of the author of the book is too long. Book: {data[0]}");
-            }
-            if (data[5].Length > 255)
-            {
-                throw new ArgumentException($"The publisher's name is too long. Book: {data[0]}");
-            }
-            if (!int.TryParse(data[1], out int pages))
-            {
-                throw new ArgumentException($"The page format is incorrect. Book: {data[0]}");
-            }
-            if (!DateTime.TryParse(data[3], out DateTime bookDate))
-            {
-                throw new ArgumentException($"The date format is incorrect. Book: {data[0]}");
-            }
+            var book = new Book(data);
+            var genre = new Genre(data[2]);
+            var author = new Author(data[4]);
+            var publisher = new Publisher(data[5]);
 
-            Genre genre = db.Genre.FirstOrDefault(g => g.Name == data[2])!;
-            if (genre == null)
-            {
-                genre = new Genre
-                {
-                    Name = data[2]
-                };
+            if (!db.Genre.Any(g => g == genre))
                 db.Genre.Add(genre);
-                db.SaveChanges();
-            }
-
-            Author author = db.Author.FirstOrDefault(a => a.Name == data[4])!;
-            if (author == null)
-            {
-                author = new Author
-                {
-                    Name = data[4]
-                };
+            if (!db.Author.Any(a => a == author))
                 db.Author.Add(author);
-                db.SaveChanges();
-            }
-
-            Publisher publisher = db.Publisher.FirstOrDefault(p => p.Name == data[5])!;
-            if (publisher == null)
-            {
-                publisher = new Publisher { Name = data[5] };
+            if (!db.Publisher.Any(p => p == publisher))
                 db.Publisher.Add(publisher);
+            if (!db.Books.Any(b => b == book))
+            {
+                db.Books.Add(book);
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"{data[0]} by {data[4]}, added to the database successfully");
+                Console.ForegroundColor = ConsoleColor.White;
                 db.SaveChanges();
             }
-
-            Book book = new()
+            else
             {
-                Title = data[0],
-                Pages = pages,
-                GenreId = genre.Id,
-                ReleaseDate = bookDate,
-                AuthorId = author.Id,
-                PublisherId = publisher.Id,
-            };
-            book.Id = GenerateGuidFromData(book);
-
-            return book;
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"{data[0]} by {data[4]}, already in the database");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
         }
 
-        public static List<Book> GetBook(Filter filter)
+        public static List<Book> GetFilteredBooks(Filter filter)
         {
             using var db = new DatabaseBooksContext();
 
@@ -110,9 +71,9 @@ namespace Books.Database
 
             var books = db.Books.Where(b =>
                                     (filter.Title == null || b.Title!.Contains(filter.Title)) &&
-                                    (filter.Genre == null || possibleGenres.Contains(b.GenreId!)) && 
-                                    (filter.Author == null || possibleAuthor.Contains(b.AuthorId!)) && 
-                                    (filter.Publisher == null || possiblePublisher.Contains(b.PublisherId!)) && 
+                                    (filter.Genre == null || possibleGenres.Contains(b.GenreId!)) &&
+                                    (filter.Author == null || possibleAuthor.Contains(b.AuthorId!)) &&
+                                    (filter.Publisher == null || possiblePublisher.Contains(b.PublisherId!)) &&
                                     (filter.MoreThanPages == null || b.Pages >= filter.MoreThanPages) &&
                                     (filter.LessThanPages == null || b.Pages < filter.LessThanPages) &&
                                     (filter.PublishedBefore == null || b.ReleaseDate < filter.PublishedBefore) &&
@@ -120,6 +81,65 @@ namespace Books.Database
                                     );
 
             return books.ToList();
+        }
+
+        public static void AddBooks(List<string[]> books)
+        {
+            try
+            {
+                using var db = new DatabaseBooksContext();
+
+                int counter = 0;
+
+                while (books.Count != 0)
+                {
+                    try
+                    {
+                        var firstElement = books.First();
+                        books.Remove(firstElement);
+                        AddBook(firstElement);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine(ex.Message);
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                }
+
+                Console.WriteLine($"Total books added: {counter}");
+            }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message);
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+        }
+
+        public static void GetBooksToFileWithFilter(string pathToFilter, string pathToFile)
+        {
+            Filter filter = JsonConvert.DeserializeObject<Filter>(File.ReadAllText(pathToFilter))!;
+
+            var books = GetFilteredBooks(filter);
+
+            using var writer = File.CreateText(pathToFile);
+            using var db = new DatabaseBooksContext();
+
+            foreach (var book in books)
+            {
+                var result = $"{book.Title}," +
+                             $"{book.Pages}," +
+                             $"{db.Genre.Where(g => g.Id == book.GenreId).ToArray()[0].Name}," +
+                             $"{db.Author.Where(a => a.Id == book.AuthorId).ToArray()[0].Name}," +
+                             $"{db.Publisher.Where(p => p.Id == book.PublisherId).ToArray()[0].Name}," +
+                             $"{book.ReleaseDate:yyyy-MM-dd}";
+
+                writer.WriteLine(result);
+            }
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine($"Books available on request: {books.Count}");
+            Console.ForegroundColor = ConsoleColor.White;
         }
     }
 }
