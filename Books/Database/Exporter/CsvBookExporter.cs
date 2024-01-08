@@ -6,8 +6,14 @@ using System.IO;
 
 namespace Books.Database.Exporter
 {
+    /// <summary>
+    /// Class for exporting books in csv format
+    /// </summary>
     public class CsvBookExporter
     {
+        /// <summary>
+        /// Writes data to a file using a filter and IDatabaseQueries acts as a data source 
+        /// </summary>
         public static void WriteBooksToFile(string pathTo, string pathFilter, IDatabaseQueries from)
         {
             BooksFilter filter = JsonConvert.DeserializeObject<BooksFilter>(File.ReadAllText(pathFilter))!;

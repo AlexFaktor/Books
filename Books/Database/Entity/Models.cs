@@ -44,6 +44,10 @@ namespace Books.Database.Entity
         [MaxLength(255)]
         public string? Name { get; set; }
 
+        /// <summary>
+        /// Since the Guid is not attached to the data, you need to check for duplication.
+        /// If the database has such data, the return function will return it, else will generate a new Guid 
+        /// </summary>
         public static Guid GetGuidByName(string name)
         {
             var db = new BooksContext();
@@ -71,6 +75,10 @@ namespace Books.Database.Entity
         [MaxLength(255)]
         public string? Name { get; set; }
 
+        /// <summary>
+        /// Since the Guid is not attached to the data, you need to check for duplication.
+        /// If the database has such data, the return function will return it, else will generate a new Guid 
+        /// </summary>
         public static Guid GetGuidByName(string name)
         {
             var db = new BooksContext();
@@ -98,6 +106,10 @@ namespace Books.Database.Entity
         [MaxLength(255)]
         public string? Name { get; set; }
 
+        /// <summary>
+        /// Since the Guid is not attached to the data, you need to check for duplication.
+        /// If the database has such data, the return function will return it, else will generate a new Guid 
+        /// </summary>
         public static Guid GetGuidByName(string name)
         {
             var db = new BooksContext();

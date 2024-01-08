@@ -3,6 +3,9 @@ using Books.Database.Structures;
 
 namespace Books.Database.Importer
 {
+    /// <summary>
+    /// Class for importing books in csv format
+    /// </summary>
     public class CsvBookImporter : IBooksImporter
     {
         private readonly StreamReader? reader;
@@ -12,6 +15,9 @@ namespace Books.Database.Importer
             reader = new StreamReader(path);
         }
 
+        /// <summary>
+        /// Parsing an array of strings to a book
+        /// </summary>
         private static BookStruct ParseBook(string[] data)
         {
             if (data[0].Length > 255)
@@ -40,6 +46,9 @@ namespace Books.Database.Importer
             return book;
         }
 
+        /// <summary>
+        /// Returns true if there are books to return
+        /// </summary>
         public bool TryGetBook(out BookStruct book)
         {
             string? line;
@@ -48,7 +57,6 @@ namespace Books.Database.Importer
                 book = default;
                 return false;
             }
-
 
             book = ParseBook(line.Split(','));
             return true;

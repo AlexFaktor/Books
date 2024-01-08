@@ -4,6 +4,9 @@ using Books.Database.Structures;
 
 namespace Books.Database.Queries
 {
+    /// <summary>
+    /// Class of database queries
+    /// </summary>
     public class DatabaseQueries : IDatabaseQueries
     {
         private readonly BooksContext db;
@@ -13,7 +16,10 @@ namespace Books.Database.Queries
             db = new BooksContext();
         }
 
-        public void AddBook(IBooksImporter books)
+        /// <summary>
+        /// Adds books from the source
+        /// </summary>
+        public void AddBooks(IBooksImporter books)
         {
             bool import = true;
 
@@ -58,6 +64,9 @@ namespace Books.Database.Queries
             while (import);
         }
 
+        /// <summary>
+        /// Filters books and returns them in a convenient format
+        /// </summary>
         public List<BookStruct> FindBooks(BooksFilter filter)
         {
             var possibleGenres = db.Genre.Where(g => g.Name!.Contains(filter.Genre!)).Select(g => g.Id);

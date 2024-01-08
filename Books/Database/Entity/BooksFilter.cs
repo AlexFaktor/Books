@@ -13,6 +13,9 @@ namespace Books.Database.Entity
         public DateTime? PublishedBefore { get; set; }
         public DateTime? PublishedAfter { get; set; }
 
+        /// <summary>
+        /// There are no required fields, which makes the filter flexible
+        /// </summary>
         public BooksFilter(string? title = default,
                       string? genre = default,
                       string? author = default,

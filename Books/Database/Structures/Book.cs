@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Books.Database.Structures
 {
+    /// <summary>
+    /// Book structure without Guid
+    /// </summary>
     public struct BookStruct
     {
         [MaxLength(255)]

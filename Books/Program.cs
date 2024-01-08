@@ -12,7 +12,7 @@ namespace Books
 
             if (args.Length == 1)
             {
-                db.AddBook(new CsvBookImporter(args[0]));
+                db.AddBooks(new CsvBookImporter(args[0]));
                 return 0;
             }
             if (args.Length == 2)
