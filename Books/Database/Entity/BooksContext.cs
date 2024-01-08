@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Books.Database.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Books.Database
 {
-    public class DatabaseBooksContext : DbContext
+    public class BooksContext : DbContext
     {
-        public DatabaseBooksContext()
+        public BooksContext()
         {
         }
 

@@ -1,5 +1,6 @@
-﻿using Books.Database;
-using Newtonsoft.Json;
+﻿using Books.Database.Exporter;
+using Books.Database.Importer;
+using Books.Database.Queries;
 
 namespace Books
 {
@@ -7,14 +8,16 @@ namespace Books
     {
         static int Main(string[] args)
         {
+            var db = new DatabaseQueries();
+
             if (args.Length == 1)
             {
-                Queries.AddBooks(FileBookTools.GetBooksFromFile(args[0]));
+                db.AddBook(new CsvBookImporter(args[0]));
                 return 0;
             }
             if (args.Length == 2)
             {
-                FileBookTools.SetBooksToFile(Queries.GetBooksWithFilterFromFile(args[0]), args[1]);
+                CsvBookExporter.WriteBooksToFile(args[0], args[1], db);
                 return 0;
             }
 

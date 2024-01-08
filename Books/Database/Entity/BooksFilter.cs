@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 
-namespace Books.Database
+namespace Books.Database.Entity
 {
-    public class Filter
+    public class BooksFilter
     {
         public string? Title { get; set; }
         public string? Genre { get; set; }
@@ -13,13 +13,13 @@ namespace Books.Database
         public DateTime? PublishedBefore { get; set; }
         public DateTime? PublishedAfter { get; set; }
 
-        public Filter(string? title = default, 
-                      string? genre = default, 
-                      string? author = default, 
-                      string? publisher = default, 
-                      int? moreThanPages = default, 
-                      int? lessThanPages = default, 
-                      DateTime? publishedBefore = default, 
+        public BooksFilter(string? title = default,
+                      string? genre = default,
+                      string? author = default,
+                      string? publisher = default,
+                      int? moreThanPages = default,
+                      int? lessThanPages = default,
+                      DateTime? publishedBefore = default,
                       DateTime? publishedAfter = default)
         {
             Title = title;

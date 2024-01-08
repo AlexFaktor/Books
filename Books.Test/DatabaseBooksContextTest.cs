@@ -1,4 +1,4 @@
-﻿using Books.Database;
+﻿using Books.Database.Entity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Books.Test
