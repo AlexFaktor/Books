@@ -1,10 +1,11 @@
 ﻿using Books.Database.Entity;
+using Books.Database.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Books.Test
 {
-    public class DatabaseBooksContextTest : DbContext
-    {
+    public class BooksContextTest : DbContext
+    { 
         public DbSet<Book> Books { get; set; }
         public DbSet<Genre> Genre { get; set; }
         public DbSet<Author> Author { get; set; }

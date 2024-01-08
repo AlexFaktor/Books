@@ -1,4 +1,5 @@
 ﻿using Books.Database.Entity;
+using Books.Database.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Books.Database

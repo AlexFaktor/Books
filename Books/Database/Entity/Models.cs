@@ -1,4 +1,5 @@
-﻿using Books.Database.Structures;
+﻿using Books.Database.Interfaces;
+using Books.Database.Structures;
 using System.ComponentModel.DataAnnotations;
 
 namespace Books.Database.Entity
