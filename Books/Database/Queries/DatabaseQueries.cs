@@ -11,9 +11,9 @@ namespace Books.Database.Queries
     {
         private readonly BooksContext db;
 
-        public DatabaseQueries()
+        public DatabaseQueries(BooksContext db)
         {
-            db = new BooksContext();
+            this.db = db;
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace Books.Database.Queries
                     import = books.TryGetBook(out BookStruct book);
                     if (import)
                     {
-                        var bookDb = new Book(book);
+                        var bookDb = new Book(book, db);
                         var povtorki = db.Books.Where(b => b.Title == bookDb.Title &&
                                             b.Pages == bookDb.Pages &&
                                             b.GenreId == bookDb.GenreId &&
@@ -87,7 +87,7 @@ namespace Books.Database.Queries
             var result = new List<BookStruct>();
             foreach ( var book in books )
             {
-                result.Add(new BookStruct(book));
+                result.Add(new BookStruct(book, db));
             }
 
             return result;

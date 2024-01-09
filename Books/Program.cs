@@ -1,4 +1,5 @@
-﻿using Books.Database.Exporter;
+﻿using Books.Database;
+using Books.Database.Exporter;
 using Books.Database.Importer;
 using Books.Database.Queries;
 
@@ -8,7 +9,7 @@ namespace Books
     {
         static int Main(string[] args)
         {
-            var db = new DatabaseQueries();
+            var db = new DatabaseQueries(new BooksContext());
 
             if (args.Length == 1)
             {

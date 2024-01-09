@@ -25,13 +25,13 @@ namespace Books.Database.Entity
         {
 
         }
-        public Book(BookStruct book)
+        public Book(BookStruct book, BooksContext db)
         {
             Title = book.Title;
             Pages = book.Pages;
-            GenreId = Genre.GetGuidByName(book.Genre);
-            AuthorId = Author.GetGuidByName(book.Author);
-            PublisherId = Publisher.GetGuidByName(book.Publisher);
+            GenreId = Genre.GetGuidByName(book.Genre, db);
+            AuthorId = Author.GetGuidByName(book.Author, db);
+            PublisherId = Publisher.GetGuidByName(book.Publisher, db);
             ReleaseDate = book.ReleaseDate;
         }
     }
@@ -49,10 +49,8 @@ namespace Books.Database.Entity
         /// Since the Guid is not attached to the data, you need to check for duplication.
         /// If the database has such data, the return function will return it, else will generate a new Guid 
         /// </summary>
-        public static Guid GetGuidByName(string name)
+        public static Guid GetGuidByName(string name, BooksContext db)
         {
-            var db = new BooksContext();
-
             var genre = db.Genre.Where(g => g.Name == name)
                 .FirstOrDefault()!;
             if (genre == null)
@@ -80,10 +78,8 @@ namespace Books.Database.Entity
         /// Since the Guid is not attached to the data, you need to check for duplication.
         /// If the database has such data, the return function will return it, else will generate a new Guid 
         /// </summary>
-        public static Guid GetGuidByName(string name)
+        public static Guid GetGuidByName(string name, BooksContext db)
         {
-            var db = new BooksContext();
-
             var author = db.Author.Where(g => g.Name == name)
                 .FirstOrDefault()!;
             if (author == null)
@@ -111,10 +107,8 @@ namespace Books.Database.Entity
         /// Since the Guid is not attached to the data, you need to check for duplication.
         /// If the database has such data, the return function will return it, else will generate a new Guid 
         /// </summary>
-        public static Guid GetGuidByName(string name)
+        public static Guid GetGuidByName(string name, BooksContext db)
         {
-            var db = new BooksContext();
-
             var publisher = db.Publisher.Where(g => g.Name == name)
                 .FirstOrDefault()!;
             if (publisher == null)

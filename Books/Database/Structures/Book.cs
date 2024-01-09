@@ -19,10 +19,8 @@ namespace Books.Database.Structures
         public string Publisher { get; set; }
         public DateTime ReleaseDate { get; set; }
 
-        public BookStruct(Book book)
+        public BookStruct(Book book, BooksContext db)
         { 
-            var db = new BooksContext();
-
             Title = book.Title!;
             Pages = book.Pages;
             Genre = db.Genre.Where(g => g.Id == book.GenreId).FirstOrDefault()!.Name!;
