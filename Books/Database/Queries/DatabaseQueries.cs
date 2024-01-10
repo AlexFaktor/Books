@@ -72,28 +72,54 @@ namespace Books.Database.Queries
         /// </summary>
         public List<Book> FindBooks(BooksFilter filter)
         {
-            var possibleGenres = db.Genre.Where(g => g.Name!.Contains(filter.Genre!)).Select(g => g.Id);
-            var possibleAuthor = db.Author.Where(g => g.Name!.Contains(filter.Author!)).Select(g => g.Id);
-            var possiblePublisher = db.Publisher.Where(g => g.Name!.Contains(filter.Publisher!)).Select(g => g.Id);
+            IQueryable<RecordBook> query = db.Books;
 
-            var books = db.Books.Where(b =>
-                                    (filter.Title == null || b.Title!.Contains(filter.Title)) &&
-                                    (filter.Genre == null || possibleGenres.Contains(b.GenreId)) &&
-                                    (filter.Author == null || possibleAuthor.Contains(b.AuthorId)) &&
-                                    (filter.Publisher == null || possiblePublisher.Contains(b.PublisherId)) &&
-                                    (filter.MoreThanPages == null || b.Pages >= filter.MoreThanPages) &&
-                                    (filter.LessThanPages == null || b.Pages < filter.LessThanPages) &&
-                                    (filter.PublishedBefore == null || b.ReleaseDate < filter.PublishedBefore) &&
-                                    (filter.PublishedAfter == null || b.ReleaseDate > filter.PublishedAfter)
-                                    ).ToList();
-
-            var result = new List<Book>();
-            foreach ( var book in books )
+            if (!string.IsNullOrWhiteSpace(filter.Title))
             {
-                result.Add(new Book(book, db));
+                query = query.Where(b => b.Title!.Contains(filter.Title));
             }
 
-            return result;
+            if (filter.Genre is not null)
+            {
+                var possibleGenres = db.Genre.Where(g => g.Name!.Contains(filter.Genre!)).Select(g => g.Id);
+                query = query.Where(b => possibleGenres.Contains(b.GenreId));
+            }
+
+            if (filter.Author is not null)
+            {
+                var possibleAuthor = db.Author.Where(g => g.Name!.Contains(filter.Author!)).Select(g => g.Id);
+                query = query.Where(b => possibleAuthor.Contains(b.AuthorId));
+            }
+
+            if (filter.Publisher is not null)
+            {
+                var possiblePublisher = db.Publisher.Where(g => g.Name!.Contains(filter.Publisher!)).Select(g => g.Id);
+                query = query.Where(b => possiblePublisher.Contains(b.PublisherId));
+            }
+
+            if (filter.MoreThanPages is not null)
+            {
+                query = query.Where(b => b.Pages > filter.MoreThanPages);
+            }
+
+            if (filter.LessThanPages is not null)
+            {
+                query = query.Where(b => b.Pages < filter.LessThanPages);
+            }
+
+            if (filter.PublishedBefore is not null)
+            {
+                query = query.Where(b => b.ReleaseDate < filter.PublishedBefore);
+            }
+
+            if (filter.PublishedAfter is not null)
+            {
+                query = query.Where(b => b.ReleaseDate > filter.PublishedAfter);
+            }
+
+            var books = query.ToList();
+
+            return books.Select(i => new Book(i, db )).ToList();
         }
     }
 }
