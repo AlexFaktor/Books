@@ -38,10 +38,10 @@ namespace Books.Test
 
         [TestMethod]
         [DataRow(null, null, null, null, null, null, null, null, 41)]
-        [DataRow("tHe", null, null, null, null, null, null, null, 22)]
-        [DataRow(null, "hor", null, null, null, null, null, null, 3)]
+        [DataRow("thE", null, null, null, null, null, null, null, 22)]
+        [DataRow(null, "Hor", null, null, null, null, null, null, 3)]
         [DataRow(null, null, "john", null, null, null, null, null, 1)]
-        [DataRow(null, null, null, "thE", null, null, null, null, 5)]
+        [DataRow(null, null, null, "the", null, null, null, null, 5)]
         [DataRow(null, null, null, null, 200, null, null, null, 34)]
         [DataRow(null, null, null, null, null, 200, null, null, 7)]
         [DataRow(null, null, null, null, null, null, "1900-01-01", null, 15)]

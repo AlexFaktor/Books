@@ -76,24 +76,24 @@ namespace Books.Database.Queries
 
             if (!string.IsNullOrWhiteSpace(filter.Title))
             {
-                query = query.Where(b => b.Title!.Contains(filter.Title));
+                query = query.Where(b => b.Title!.Contains(filter.Title, StringComparison.OrdinalIgnoreCase));
             }
 
             if (filter.Genre is not null)
             {
-                var possibleGenres = db.Genre.Where(g => g.Name!.Contains(filter.Genre!)).Select(g => g.Id);
+                var possibleGenres = db.Genre.Where(g => g.Name!.Contains(filter.Genre!, StringComparison.OrdinalIgnoreCase)).Select(g => g.Id);
                 query = query.Where(b => possibleGenres.Contains(b.GenreId));
             }
 
             if (filter.Author is not null)
             {
-                var possibleAuthor = db.Author.Where(g => g.Name!.Contains(filter.Author!)).Select(g => g.Id);
+                var possibleAuthor = db.Author.Where(g => g.Name!.Contains(filter.Author!, StringComparison.OrdinalIgnoreCase)).Select(g => g.Id);
                 query = query.Where(b => possibleAuthor.Contains(b.AuthorId));
             }
 
             if (filter.Publisher is not null)
             {
-                var possiblePublisher = db.Publisher.Where(g => g.Name!.Contains(filter.Publisher!)).Select(g => g.Id);
+                var possiblePublisher = db.Publisher.Where(g => g.Name!.Contains(filter.Publisher!, StringComparison.OrdinalIgnoreCase)).Select(g => g.Id);
                 query = query.Where(b => possiblePublisher.Contains(b.PublisherId));
             }
 
