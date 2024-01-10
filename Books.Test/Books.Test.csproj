@@ -21,4 +21,10 @@
     <ProjectReference Include="..\Books\Books.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="books.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

@@ -1,4 +1,6 @@
-﻿namespace Books.Database.Filters
+﻿using Microsoft.Data.SqlClient;
+
+namespace Books.Database.Filters
 {
     public class BooksFilter
     {
@@ -31,6 +33,26 @@
             LessThanPages = lessThanPages;
             PublishedBefore = publishedBefore;
             PublishedAfter = publishedAfter;
+        }
+
+        public BooksFilter(string? title = default,
+                      string? genre = default,
+                      string? author = default,
+                      string? publisher = default,
+                      int? moreThanPages = default,
+                      int? lessThanPages = default,
+                      string? publishedBefore = default,
+                      string? publishedAfter = default)
+        {
+            Title = title;
+            Genre = genre;
+            Author = author;
+            Publisher = publisher;
+            MoreThanPages = moreThanPages;
+            LessThanPages = lessThanPages;
+
+            PublishedBefore = publishedBefore != null ? DateTime.Parse(publishedBefore) : (DateTime?)null;
+            PublishedAfter = publishedAfter != null ? DateTime.Parse(publishedAfter) : (DateTime?)null;
         }
     }
 }
