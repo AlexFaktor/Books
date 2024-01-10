@@ -1,7 +1,7 @@
-﻿using Books.Database;
-using Books.Database.Exporter;
-using Books.Database.Importer;
+﻿using Books.Database.Models;
 using Books.Database.Queries;
+using Books.DataOperations.Exporter;
+using Books.DataOperations.Importer;
 
 namespace Books
 {

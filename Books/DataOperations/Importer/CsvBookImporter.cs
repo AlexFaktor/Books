@@ -1,7 +1,7 @@
-﻿using Books.Database.Interfaces;
-using Books.Database.Structures;
+﻿using Books.Services.Interfaces;
+using Books.Services.Structures;
 
-namespace Books.Database.Importer
+namespace Books.DataOperations.Importer
 {
     /// <summary>
     /// Class for importing books in csv format
@@ -18,7 +18,7 @@ namespace Books.Database.Importer
         /// <summary>
         /// Parsing an array of strings to a book
         /// </summary>
-        private static BookStruct ParseBook(string[] data)
+        private static Book ParseBook(string[] data)
         {
             if (data[0].Length > 255)
                 throw new ArgumentException($"The book name is too long. Book: {data[0]}");
@@ -33,7 +33,7 @@ namespace Books.Database.Importer
             if (data[5].Length > 255)
                 throw new ArgumentException($"The publisher's name is too long. Book: {data[0]}");
 
-            var book = new BookStruct
+            var book = new Book
             {
                 Title = data[0],
                 Pages = bookPages,
@@ -49,7 +49,7 @@ namespace Books.Database.Importer
         /// <summary>
         /// Returns true if there are books to return
         /// </summary>
-        public bool TryGetBook(out BookStruct book)
+        public bool TryGetBook(out Book book)
         {
             string? line;
             if ((line = reader!.ReadLine()) == null)

@@ -1,8 +1,6 @@
-﻿using Books.Database.Entity;
-using Books.Database.Interfaces;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
-namespace Books.Database
+namespace Books.Database.Models
 {
     public class BooksContext : DbContext
     {
@@ -10,7 +8,7 @@ namespace Books.Database
         {
         }
 
-        public DbSet<Book> Books { get; set; }
+        public DbSet<RecordBook> Books { get; set; }
         public DbSet<Genre> Genre { get; set; }
         public DbSet<Author> Author { get; set; }
         public DbSet<Publisher> Publisher { get; set; }

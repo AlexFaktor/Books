@@ -1,8 +1,8 @@
-﻿using Books.Database.Entity;
-using Books.Database.Interfaces;
+﻿using Books.Database.Filters;
+using Books.Services.Interfaces;
 using Newtonsoft.Json;
 
-namespace Books.Database.Exporter
+namespace Books.DataOperations.Exporter
 {
     /// <summary>
     /// Class for exporting books in csv format

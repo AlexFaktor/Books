@@ -1,15 +1,14 @@
-﻿using Books.Database.Entity;
-using Books.Database.Structures;
-using Microsoft.EntityFrameworkCore;
+﻿using Books.Database.Filters;
+using Books.Services.Structures;
 
-namespace Books.Database.Interfaces
+namespace Books.Services.Interfaces
 {
     /// <summary>
     /// Using this interface, you can make a book source
     /// </summary>
     public interface IBooksImporter
     {
-        bool TryGetBook(out BookStruct book);
+        bool TryGetBook(out Book book);
     }
 
     /// <summary>
@@ -18,6 +17,6 @@ namespace Books.Database.Interfaces
     public interface IDatabaseQueries
     {
         void AddBooks(IBooksImporter books);
-        List<BookStruct> FindBooks(BooksFilter filter);
+        List<Book> FindBooks(BooksFilter filter);
     }
 }

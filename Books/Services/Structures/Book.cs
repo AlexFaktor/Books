@@ -1,12 +1,12 @@
-﻿using Books.Database.Entity;
+﻿using Books.Database.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace Books.Database.Structures
+namespace Books.Services.Structures
 {
     /// <summary>
     /// Book structure without Guid
     /// </summary>
-    public struct BookStruct
+    public struct Book
     {
         [MaxLength(255)]
         public string Title { get; set; }
@@ -19,8 +19,8 @@ namespace Books.Database.Structures
         public string Publisher { get; set; }
         public DateTime ReleaseDate { get; set; }
 
-        public BookStruct(Book book, BooksContext db)
-        { 
+        public Book(RecordBook book, BooksContext db)
+        {
             Title = book.Title!;
             Pages = book.Pages;
             Genre = db.Genre.Where(g => g.Id == book.GenreId).FirstOrDefault()!.Name!;

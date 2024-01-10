@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace Books.Database.Entity
+﻿namespace Books.Database.Filters
 {
     public class BooksFilter
     {

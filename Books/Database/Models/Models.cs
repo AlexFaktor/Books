@@ -1,10 +1,9 @@
-﻿using Books.Database.Interfaces;
-using Books.Database.Structures;
+﻿using Books.Services.Structures;
 using System.ComponentModel.DataAnnotations;
 
-namespace Books.Database.Entity
+namespace Books.Database.Models
 {
-    public class Book
+    public class RecordBook
     {
         [Required]
         public Guid Id { get; set; }
@@ -21,11 +20,11 @@ namespace Books.Database.Entity
         public Guid PublisherId { get; set; }
         public DateTime ReleaseDate { get; set; }
 
-        Book()
+        RecordBook()
         {
 
         }
-        public Book(BookStruct book, BooksContext db)
+        public RecordBook(Book book, BooksContext db)
         {
             Title = book.Title;
             Pages = book.Pages;

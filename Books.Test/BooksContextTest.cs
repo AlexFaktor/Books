@@ -1,6 +1,4 @@
-﻿using Books.Database;
-using Books.Database.Entity;
-using Books.Database.Interfaces;
+﻿using Books.Database.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Books.Test

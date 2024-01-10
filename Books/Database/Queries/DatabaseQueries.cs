@@ -1,6 +1,7 @@
-﻿using Books.Database.Entity;
-using Books.Database.Interfaces;
-using Books.Database.Structures;
+﻿using Books.Database.Filters;
+using Books.Database.Models;
+using Books.Services.Interfaces;
+using Books.Services.Structures;
 
 namespace Books.Database.Queries
 {
@@ -27,17 +28,19 @@ namespace Books.Database.Queries
             {
                 try
                 {
-                    import = books.TryGetBook(out BookStruct book);
+                    import = books.TryGetBook(out Book book);
                     if (import)
                     {
-                        var bookDb = new Book(book, db);
-                        var povtorki = db.Books.Where(b => b.Title == bookDb.Title &&
+                        var bookDb = new RecordBook(book, db);
+                        var isRepeatedBooks = db.Books.Where(b => b.Title == bookDb.Title &&
                                             b.Pages == bookDb.Pages &&
                                             b.GenreId == bookDb.GenreId &&
                                             b.AuthorId == bookDb.AuthorId &&
                                             b.PublisherId == bookDb.PublisherId &&
-                                            b.ReleaseDate == bookDb.ReleaseDate).ToArray();
-                        if (povtorki.Length == 0)
+                                            b.ReleaseDate == bookDb.ReleaseDate)
+                                            .ToArray()
+                                            .Length == 0;
+                        if (isRepeatedBooks)
                         {
                             db.Books.Add(bookDb);
                             Console.ForegroundColor = ConsoleColor.Green;
@@ -67,7 +70,7 @@ namespace Books.Database.Queries
         /// <summary>
         /// Filters books and returns them in a convenient format
         /// </summary>
-        public List<BookStruct> FindBooks(BooksFilter filter)
+        public List<Book> FindBooks(BooksFilter filter)
         {
             var possibleGenres = db.Genre.Where(g => g.Name!.Contains(filter.Genre!)).Select(g => g.Id);
             var possibleAuthor = db.Author.Where(g => g.Name!.Contains(filter.Author!)).Select(g => g.Id);
@@ -84,10 +87,10 @@ namespace Books.Database.Queries
                                     (filter.PublishedAfter == null || b.ReleaseDate > filter.PublishedAfter)
                                     ).ToList();
 
-            var result = new List<BookStruct>();
+            var result = new List<Book>();
             foreach ( var book in books )
             {
-                result.Add(new BookStruct(book, db));
+                result.Add(new Book(book, db));
             }
 
             return result;
