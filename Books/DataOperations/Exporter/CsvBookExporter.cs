@@ -16,7 +16,7 @@ namespace Books.DataOperations.Exporter
         {
             try
             {
-                BooksFilter filter = JsonConvert.DeserializeObject<BooksFilter>(File.ReadAllText(pathFilter))! ?? throw new JsonException("Incorrect data in the filter");
+                BooksFilter filter = JsonConvert.DeserializeObject<BooksFilter>(File.ReadAllText(pathFilter))!;
 
                 var books = from.FindBooks(filter);
                 using var writer = File.CreateText(pathTo);

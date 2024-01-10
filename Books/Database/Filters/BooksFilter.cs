@@ -1,6 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
-
-namespace Books.Database.Filters
+﻿namespace Books.Database.Filters
 {
     public class BooksFilter
     {
@@ -14,27 +12,16 @@ namespace Books.Database.Filters
         public DateTime? PublishedAfter { get; set; }
 
         /// <summary>
-        /// There are no required fields, which makes the filter flexible
+        /// for JSON
         /// </summary>
-        public BooksFilter(string? title = default,
-                      string? genre = default,
-                      string? author = default,
-                      string? publisher = default,
-                      int? moreThanPages = default,
-                      int? lessThanPages = default,
-                      DateTime? publishedBefore = default,
-                      DateTime? publishedAfter = default)
+        public BooksFilter()
         {
-            Title = title;
-            Genre = genre;
-            Author = author;
-            Publisher = publisher;
-            MoreThanPages = moreThanPages;
-            LessThanPages = lessThanPages;
-            PublishedBefore = publishedBefore;
-            PublishedAfter = publishedAfter;
+
         }
 
+        /// <summary>
+        /// for tests
+        /// </summary>
         public BooksFilter(string? title = default,
                       string? genre = default,
                       string? author = default,
@@ -51,8 +38,8 @@ namespace Books.Database.Filters
             MoreThanPages = moreThanPages;
             LessThanPages = lessThanPages;
 
-            PublishedBefore = publishedBefore != null ? DateTime.Parse(publishedBefore) : (DateTime?)null;
-            PublishedAfter = publishedAfter != null ? DateTime.Parse(publishedAfter) : (DateTime?)null;
+            PublishedBefore = publishedBefore != null ? DateTime.Parse(publishedBefore) : null;
+            PublishedAfter = publishedAfter != null ? DateTime.Parse(publishedAfter) : null;
         }
     }
 }

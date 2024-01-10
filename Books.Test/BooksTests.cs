@@ -15,8 +15,8 @@ namespace Books.Test
         public void TestInitialize()
         {
             db = new BooksContextTest();
-            db.Database.EnsureDeleted(); // Видаляє базу даних
-            db.Database.EnsureCreated(); // Створює нову базу даних
+            db.Database.EnsureDeleted(); 
+            db.Database.EnsureCreated(); 
             dbQueries = new DatabaseQueries(db);
         }
 
