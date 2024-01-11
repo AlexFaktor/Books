@@ -24,7 +24,7 @@ namespace Books.Database.Queries
         {
             bool import = true;
 
-            do
+            while (import)
             {
                 try
                 {
@@ -32,15 +32,13 @@ namespace Books.Database.Queries
                     if (import)
                     {
                         var bookDb = new RecordBook(book, db);
-                        var isRepeatedBooks = db.Books.Where(b => b.Title == bookDb.Title &&
+                        var isRepeatedBooks = db.Books.Any(b => b.Title == bookDb.Title &&
                                             b.Pages == bookDb.Pages &&
                                             b.GenreId == bookDb.GenreId &&
                                             b.AuthorId == bookDb.AuthorId &&
                                             b.PublisherId == bookDb.PublisherId &&
-                                            b.ReleaseDate == bookDb.ReleaseDate)
-                                            .ToArray()
-                                            .Length == 0;
-                        if (isRepeatedBooks)
+                                            b.ReleaseDate == bookDb.ReleaseDate);
+                        if (!isRepeatedBooks)
                         {
                             db.Books.Add(bookDb);
                             Console.ForegroundColor = ConsoleColor.Green;
@@ -64,7 +62,6 @@ namespace Books.Database.Queries
                     Console.ResetColor();
                 }
             }
-            while (import);
         }
 
         /// <summary>

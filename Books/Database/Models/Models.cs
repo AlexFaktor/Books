@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Books.Database.Models
 {
-    public class RecordBook
+    public partial class RecordBook
     {
         [Required]
         public Guid Id { get; set; }
@@ -19,107 +19,33 @@ namespace Books.Database.Models
         [Required]
         public Guid PublisherId { get; set; }
         public DateTime ReleaseDate { get; set; }
-
-        RecordBook()
-        {
-
-        }
-        public RecordBook(Book book, BooksContext db)
-        {
-            Title = book.Title;
-            Pages = book.Pages;
-            GenreId = Genre.GetGuidByName(book.Genre, db);
-            AuthorId = Author.GetGuidByName(book.Author, db);
-            PublisherId = Publisher.GetGuidByName(book.Publisher, db);
-            ReleaseDate = book.ReleaseDate;
-        }
     }
 
 
-    public class Genre
+    public partial class Genre
     {
         [Required]
         public Guid Id { get; set; }
         [Required]
         [MaxLength(255)]
         public string? Name { get; set; }
-
-        /// <summary>
-        /// Since the Guid is not attached to the data, you need to check for duplication.
-        /// If the database has such data, the return function will return it, else will generate a new Guid 
-        /// </summary>
-        public static Guid GetGuidByName(string name, BooksContext db)
-        {
-            var genre = db.Genre.Where(g => g.Name == name)
-                .FirstOrDefault()!;
-            if (genre == null)
-            {
-
-                genre = new Genre { Name = name };
-                db.Genre.Add(genre);
-                db.SaveChanges();
-                return db.Genre.Where(g => g.Name == name).FirstOrDefault()!.Id;
-            }
-
-            return genre.Id;
-        }
     }
 
-    public class Author
+    public partial class Author
     {
         [Required]
         public Guid Id { get; set; }
         [Required]
         [MaxLength(255)]
         public string? Name { get; set; }
-
-        /// <summary>
-        /// Since the Guid is not attached to the data, you need to check for duplication.
-        /// If the database has such data, the return function will return it, else will generate a new Guid 
-        /// </summary>
-        public static Guid GetGuidByName(string name, BooksContext db)
-        {
-            var author = db.Author.Where(g => g.Name == name)
-                .FirstOrDefault()!;
-            if (author == null)
-            {
-
-                author = new Author { Name = name };
-                db.Author.Add(author);
-                db.SaveChanges();
-                return db.Author.Where(g => g.Name == name).FirstOrDefault()!.Id;
-            }
-
-            return author.Id;
-        }
     }
 
-    public class Publisher
+    public partial class Publisher
     {
         [Required]
         public Guid Id { get; set; }
         [Required]
         [MaxLength(255)]
         public string? Name { get; set; }
-
-        /// <summary>
-        /// Since the Guid is not attached to the data, you need to check for duplication.
-        /// If the database has such data, the return function will return it, else will generate a new Guid 
-        /// </summary>
-        public static Guid GetGuidByName(string name, BooksContext db)
-        {
-            var publisher = db.Publisher.Where(g => g.Name == name)
-                .FirstOrDefault()!;
-            if (publisher == null)
-            {
-
-                publisher = new Publisher { Name = name };
-                db.Publisher.Add(publisher);
-                db.SaveChanges();
-                return db.Publisher.Where(g => g.Name == name).FirstOrDefault()!.Id;
-            }
-
-            return publisher.Id;
-        }
     }
 }

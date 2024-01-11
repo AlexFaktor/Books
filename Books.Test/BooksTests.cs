@@ -20,6 +20,12 @@ namespace Books.Test
             dbQueries = new DatabaseQueries(db);
         }
 
+        [TestCleanup]
+        public void TestCleanup()
+        {
+            db!.Dispose();
+        }
+
         [TestMethod]
         public void AddBooks_WithValidInput_ShouldReturnExpectedValue()
         {

@@ -16,37 +16,6 @@ namespace Books.DataOperations.Importer
         }
 
         /// <summary>
-        /// Parsing an array of strings to a book
-        /// </summary>
-        private static Book ParseBook(string[] data)
-        {
-            if (data[0].Length > 255)
-                throw new ArgumentException($"The book name is too long. Book: {data[0]}");
-            if (!int.TryParse(data[1], out int bookPages))
-                throw new ArgumentException($"The page format is incorrect. Book: {data[0]}");
-            if (data[2].Length > 255)
-                throw new ArgumentException($"The genre of the book is too long. Book: {data[0]}");
-            if (!DateTime.TryParse(data[3], out DateTime bookDate))
-                throw new ArgumentException($"The date format is incorrect. Book: {data[0]}");
-            if (data[4].Length > 255)
-                throw new ArgumentException($"The name of the author of the book is too long. Book: {data[0]}");
-            if (data[5].Length > 255)
-                throw new ArgumentException($"The publisher's name is too long. Book: {data[0]}");
-
-            var book = new Book
-            {
-                Title = data[0],
-                Pages = bookPages,
-                Genre = data[2],
-                ReleaseDate = bookDate,
-                Author = data[4],
-                Publisher = data[5]
-            };
-
-            return book;
-        }
-
-        /// <summary>
         /// Returns true if there are books to return
         /// </summary>
         public bool TryGetBook(out Book book)
@@ -58,7 +27,7 @@ namespace Books.DataOperations.Importer
                 return false;
             }
 
-            book = ParseBook(line.Split(','));
+            book = new Book(line.Split(','));
             return true;
         }
     }

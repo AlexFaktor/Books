@@ -12,13 +12,13 @@ namespace Books.DataOperations.Exporter
         /// <summary>
         /// Writes data to a file using a filter and IDatabaseQueries acts as a data source 
         /// </summary>
-        public static void WriteBooksToFile(string pathTo, string pathFilter, IDatabaseQueries from)
+        public static void WriteBooksToFile(string pathTo, string pathFilter, IDatabaseQueries db)
         {
             try
             {
                 BooksFilter filter = JsonConvert.DeserializeObject<BooksFilter>(File.ReadAllText(pathFilter))!;
 
-                var books = from.FindBooks(filter);
+                var books = db.FindBooks(filter);
                 using var writer = File.CreateText(pathTo);
 
                 foreach (var book in books)
