@@ -1,26 +1,26 @@
 ﻿using Books.Services.Structures;
-using System.Linq;
 
 namespace Books.Database.Models
 {
-    public partial class RecordBook
+    public static class BookExtensions
     {
-        public RecordBook()
+        public static RecordBook ToRecordBook(this Book book, BooksContext db)
         {
+            RecordBook recordBook = new()
+            {
+                Title = book.Title,
+                Pages = book.Pages,
+                GenreId = GenreExtensions.GetGuidByName(book.Genre, db),
+                AuthorId = AuthorExtensions.GetGuidByName(book.Author, db),
+                PublisherId = PublisherExtensions.GetGuidByName(book.Publisher, db),
+                ReleaseDate = book.ReleaseDate
+            };
 
-        }
-        public RecordBook(Book book, BooksContext db)
-        {
-            Title = book.Title;
-            Pages = book.Pages;
-            GenreId = Genre.GetGuidByName(book.Genre, db);
-            AuthorId = Author.GetGuidByName(book.Author, db);
-            PublisherId = Publisher.GetGuidByName(book.Publisher, db);
-            ReleaseDate = book.ReleaseDate;
+            return recordBook;
         }
     }
-    
-    public partial class Genre
+
+    public static class GenreExtensions
     {
         /// <summary>
         /// Since the Guid is not attached to the data, you need to check for duplication.
@@ -32,18 +32,16 @@ namespace Books.Database.Models
                 .FirstOrDefault();
             if (genre == null)
             {
-
-                genre = new Genre { Name = name };
+                genre = new Genre { Name = name, Id = Guid.NewGuid() };
                 db.Genre.Add(genre);
                 db.SaveChanges();
-                return db.Genre.FirstOrDefault(g => g.Name == name)!.Id;
             }
 
             return genre.Id;
         }
     }
 
-    public partial class Author
+    public static class AuthorExtensions
     {
         /// <summary>
         /// Since the Guid is not attached to the data, you need to check for duplication.
@@ -55,18 +53,16 @@ namespace Books.Database.Models
                 .FirstOrDefault();
             if (author == null)
             {
-
-                author = new Author { Name = name };
+                author = new Author { Name = name, Id = Guid.NewGuid() };
                 db.Author.Add(author);
                 db.SaveChanges();
-                return db.Author.FirstOrDefault(g => g.Name == name)!.Id;
             }
 
             return author.Id;
         }
     }
 
-    public partial class Publisher
+    public static class PublisherExtensions
     {
         /// <summary>
         /// Since the Guid is not attached to the data, you need to check for duplication.
@@ -78,11 +74,9 @@ namespace Books.Database.Models
                 .FirstOrDefault();
             if (publisher == null)
             {
-
-                publisher = new Publisher { Name = name };
+                publisher = new Publisher { Name = name, Id = Guid.NewGuid() };
                 db.Publisher.Add(publisher);
                 db.SaveChanges();
-                return db.Publisher.FirstOrDefault(g => g.Name == name)!.Id;
             }
 
             return publisher.Id;

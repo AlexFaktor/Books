@@ -31,7 +31,7 @@ namespace Books.Database.Queries
                     import = books.TryGetBook(out Book book);
                     if (import)
                     {
-                        var bookDb = new RecordBook(book, db);
+                        var bookDb = book.ToRecordBook(db);
                         var isRepeatedBooks = db.Books.Any(b => b.Title == bookDb.Title &&
                                             b.Pages == bookDb.Pages &&
                                             b.GenreId == bookDb.GenreId &&
@@ -116,7 +116,7 @@ namespace Books.Database.Queries
 
             var books = query.ToList();
 
-            return books.Select(i => new Book(i, db )).ToList();
+            return books.Select(i => new Book(i, db)).ToList();
         }
     }
 }

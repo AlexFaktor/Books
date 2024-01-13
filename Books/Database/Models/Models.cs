@@ -1,9 +1,8 @@
-﻿using Books.Services.Structures;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Books.Database.Models
 {
-    public partial class RecordBook
+    public class RecordBook
     {
         [Required]
         public Guid Id { get; set; }
