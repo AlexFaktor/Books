@@ -116,7 +116,7 @@ namespace Books.Database.Queries
 
             var books = query.ToList();
 
-            return books.Select(i => new Book(i, db)).ToList();
+            return books.Select(i => i.ToBook(db)).ToList();
         }
     }
 }
