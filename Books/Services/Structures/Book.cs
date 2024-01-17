@@ -1,5 +1,4 @@
-﻿using Books.Database.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Books.Services.Structures
 {

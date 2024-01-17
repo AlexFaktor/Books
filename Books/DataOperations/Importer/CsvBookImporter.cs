@@ -1,5 +1,4 @@
-﻿using Books.Database.Models;
-using Books.Services.Interfaces;
+﻿using Books.Services.Interfaces;
 using Books.Services.Structures;
 
 namespace Books.DataOperations.Importer
